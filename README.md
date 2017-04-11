@@ -1,7 +1,12 @@
-# blog
+# Ember Simple Blog
 
-This README outlines the details of collaborating on this Ember application.
-A short introduction of this app could easily go here.
+A simple blog made with Ember. It's more of a post it note to yourself than anything. Comments are saved to a firebase database and can be deleted.
+
+<img src="https://github.com/tchan/ember-blog/blob/master/demo.png" width=50% height=50%>
+
+## Demo
+
+http://ember-simple-blog.surge.sh
 
 ## Prerequisites
 
@@ -24,29 +29,3 @@ You will need the following things properly installed on your computer.
 
 * `ember serve`
 * Visit your app at [http://localhost:4200](http://localhost:4200).
-
-### Code Generators
-
-Make use of the many generators for code, try `ember help generate` for more details
-
-### Running Tests
-
-* `ember test`
-* `ember test --server`
-
-### Building
-
-* `ember build` (development)
-* `ember build --environment production` (production)
-
-### Deploying
-
-Specify what it takes to deploy your app.
-
-## Further Reading / Useful Links
-
-* [ember.js](http://emberjs.com/)
-* [ember-cli](https://ember-cli.com/)
-* Development Browser Extensions
-  * [ember inspector for chrome](https://chrome.google.com/webstore/detail/ember-inspector/bmdblncegkenkacieihfhpjfppoconhi)
-  * [ember inspector for firefox](https://addons.mozilla.org/en-US/firefox/addon/ember-inspector/)
