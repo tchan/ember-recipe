@@ -1,12 +1,8 @@
-# Ember Simple Blog
-
-A simple blog made with Ember. It's more of a post it note to yourself than anything. Comments are saved to a firebase database and can be deleted.
-
-<img src="https://github.com/tchan/ember-blog/blob/master/demo.png" width=50% height=50%>
+# Ember Recipe
 
 ## Demo
 
-http://ember-simple-blog.surge.sh
+TBD
 
 ## Prerequisites
 
