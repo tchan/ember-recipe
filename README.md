@@ -1,4 +1,5 @@
 # Ember Recipe
+Ember Recipe converts recipes from overseas that use the imperial unit of measurement to the metric system. 
 
 ## Demo
 
