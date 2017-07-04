@@ -1,19 +1,31 @@
-<h1>Ember Simple Blog</h1>
+<h1 class="text-center">Australian Recipe Converter </h1>
 
-<div class="new-post">
-  <h2>New post</h2>
-  {{textarea value=author cols="60" rows="1" placeholder="Author"}}
-  {{textarea value=title cols="60" rows="1" placeholder="Title"}}
-  {{textarea value=post cols="60" rows="5" placeholder="Body post"}}
-  <button class="pull-right" {{action 'publishNewPost'}}>Create</button>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-sm-6 text-center">
+      <div class="new-post">
+        {{textarea value=recipe cols="50" rows="10" placeholder="Paste in your recipe here"}}
+        <button class="btn btn-default" {{action 'convertRecipe' recipe}}>Convert</button>
+      </div>
+    </div>
+
+    <div class="col-sm-6 text-center">
+      <div class="new-post">
+        {{textarea value=recipe cols="50" rows="10"}}
+      </div>
+    </div>
 </div>
 
 
-{{#each model as |post|}}
+</div>
+<!-- end container-fluid -->
+
+
+{{#each model as |recipe|}}
   <div class="new-post">
-    <h1>{{post.title}}</h1>
-    <p>{{post.body}}</p>
-    <p>- {{post.author}}</p>
-    <button class="pull-right" {{action 'deletePost' post}}>Delete</button>
+    <h1>{{recipe.title}}</h1>
+    <p>{{recipe.body}}</p>
+    <p>- {{recipe.author}}</p>
+    <button class="pull-right btn btn-default" {{action 'deletePost' recipe}}>Delete</button>
   </div>
 {{/each}}
