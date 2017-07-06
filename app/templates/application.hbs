@@ -8,10 +8,10 @@
         <button class="btn btn-default" {{action 'convertRecipe' recipe}}>Convert</button>
       </div>
     </div>
-
+    {{log 'convertedRecipe' convertedRecipe}}
     <div class="col-sm-6 text-center">
       <div class="new-post">
-        {{textarea value=recipe cols="50" rows="10"}}
+        {{textarea value=convertedRecipe cols="50" rows="10"}}
       </div>
     </div>
 </div>

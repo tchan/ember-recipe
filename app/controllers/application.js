@@ -1,23 +1,22 @@
 import Ember from 'ember';
 
+const gramsPerOunce = 28.3495;
+
 function checkIfOunces(arr) {
     if (arr.includes('ounces')) {
-      return 'ounces';
+      return arr.indexOf('ounces');
     }
     if (arr.includes('ounce')) {
-      return 'ounce';
+      return arr.indexOf('ounce');
     }
     if (arr.includes('oz')) {
-      return 'oz';
+      return arr.indexOf('oz');
     }
-}
-
-function ounceIndex(arr) {
-
 }
 
 export default Ember.Controller.extend({
   title: null,
+  convertedRecipe: "Click convert!",
 
   actions: {
     publishNewPost() {
@@ -36,6 +35,7 @@ export default Ember.Controller.extend({
 
     convertRecipe(recipe) {
       let recipeArr = recipe.split("\n");
+      // console.log('initial recipeArr', recipeArr);
       // console.log(recipeArr);
       // console.log(recipeArr.length);
       //loop through each element and convert if needed
@@ -43,14 +43,27 @@ export default Ember.Controller.extend({
         // console.log(recipeArr[i]);
         // each line as a new array
         let recipeElement = recipeArr[i].split(" ");
-        console.log(recipeElement);
+        // console.log(recipeElement);
+
+        // Convert ounce value to grams
         if (checkIfOunces(recipeElement)) {
-          console.log('has ounces!');
+          let ounce = checkIfOunces(recipeElement);
+          let ounceValue = checkIfOunces(recipeElement) - 1;
+          // console.log('recipeElement:', recipeElement);
+          recipeElement[ounceValue] = (gramsPerOunce*recipeElement[ounceValue]).toFixed(0);
+          recipeElement[ounce] = "grams";
+          // console.log('updated recipeElement:', recipeElement[ounceValue]);
+          // console.log('recipeElement:', recipeElement);
+          // console.log('recipeArr[i].split():', recipeArr[i].split(" "));
+          recipeArr[i] =  recipeElement.join(" ");
+          // console.log('updated recipeArr[i]', recipeArr[i]);
         }
-        
+
       }
 
-    }
+      //final conversion output
+      Ember.set(this, 'convertedRecipe', recipeArr.join("\n"));
+    } //end convert recipe function
   }
 
 });
