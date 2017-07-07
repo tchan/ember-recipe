@@ -14,6 +14,42 @@ function checkIfOunces(arr) {
     }
 }
 
+function hasButter(arr) {
+  arr = arr.join(" ");
+  if (arr.includes('butter')) {
+    return true;
+  }
+  else {
+    return false;
+  }
+}
+
+function hasCup(arr) {
+  if (arr.includes('cup')) {
+    return arr.indexOf('cup');
+  }
+  if (arr.includes('cups')) {
+    return arr.indexOf('cups');
+  }
+}
+
+const butterCups = {
+  "⅛": 28.4,
+  "¼": 56.7,
+  "⅓": 75.6,
+  "⅜": 85,
+  "½": 113.4,
+  "⅝": 141.8,
+  "⅔": 151.2,
+  "¾": 170.1,
+  "⅞": 198.5,
+  "1": 226.8
+};
+
+function hasSugar(arr) {
+  return arr.includes('sugar');
+}
+
 export default Ember.Controller.extend({
   title: null,
   convertedRecipe: "Click convert!",
@@ -35,28 +71,50 @@ export default Ember.Controller.extend({
 
     convertRecipe(recipe) {
       let recipeArr = recipe.split("\n");
-      // console.log('initial recipeArr', recipeArr);
-      // console.log(recipeArr);
-      // console.log(recipeArr.length);
+      console.log('initial recipeArr', recipeArr);
+
       //loop through each element and convert if needed
       for (var i=0; i<recipeArr.length; i++) {
         // console.log(recipeArr[i]);
         // each line as a new array
         let recipeElement = recipeArr[i].split(" ");
-        // console.log(recipeElement);
+        console.log(recipeElement);
 
-        // Convert ounce value to grams
+        // Convert ounce value to grams if exists
         if (checkIfOunces(recipeElement)) {
           let ounce = checkIfOunces(recipeElement);
-          let ounceValue = checkIfOunces(recipeElement) - 1;
-          // console.log('recipeElement:', recipeElement);
+          let ounceValue = ounce - 1;
           recipeElement[ounceValue] = (gramsPerOunce*recipeElement[ounceValue]).toFixed(0);
           recipeElement[ounce] = "grams";
-          // console.log('updated recipeElement:', recipeElement[ounceValue]);
-          // console.log('recipeElement:', recipeElement);
-          // console.log('recipeArr[i].split():', recipeArr[i].split(" "));
           recipeArr[i] =  recipeElement.join(" ");
-          // console.log('updated recipeArr[i]', recipeArr[i]);
+        }
+
+        // console.log('recipeElement: ', recipeElement);
+        if (hasButter(recipeElement)) {
+          // Convert cups to grams
+          // figure out the index of cup / other
+          if (hasCup(recipeElement)) {
+            let butterCup = hasCup(recipeElement);
+            let butterCupValueIndex = butterCup - 1;
+            let butterCupValue = recipeElement[butterCup - 1];
+            recipeElement[butterCupValueIndex] = butterCups[butterCupValue].toFixed(0);
+            recipeElement[butterCup] = "grams";
+            recipeArr[i] =  recipeElement.join(" ");
+
+          }
+        }
+
+        if (hasSugar(recipeElement)) {
+          console.log('has sugar: ',hasSugar(recipeElement));
+          if (hasCup(recipeElement)) {
+
+            let cupIndex = hasCup(recipeElement);
+            console.log('cupindex', cupIndex);
+            let cupValueIndex = cupIndex - 1;
+            console.log('cupValue', recipeElement[cupValueIndex]);
+            recipeElement[cupIndex] = "grams";
+            recipeArr[i] =  recipeElement.join(" ");
+          }
         }
 
       }
