@@ -1,5 +1,5 @@
 # Ember Recipe
-Ember Recipe converts overseas recipes that use imperial measurements to metric grams for Australians. Currently being tailored for baking recipes. Feel free to let me know if you find any bugs.
+Ember Recipe converts overseas recipes that use imperial measurements to metric grams or mls for Australians. Currently being tailored for baking recipes. Feel free to let me know if you find any bugs.
 
 Food conversions currently include:
 * butter
