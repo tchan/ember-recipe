@@ -16,16 +16,13 @@
     </div>
 </div>
 
+<!-- <div class="text-center fixed-middle">
+  <p>If you find any bugs, please let me know. </p>
+</div> -->
+
+<div class="text-center fixed-bottom">
+  <a href="https://github.com/tchan/ember-recipe">View Source </a>
+</div>
 
 </div>
 <!-- end container-fluid -->
-
-
-{{#each model as |recipe|}}
-  <div class="new-post">
-    <h1>{{recipe.title}}</h1>
-    <p>{{recipe.body}}</p>
-    <p>- {{recipe.author}}</p>
-    <button class="pull-right btn btn-default" {{action 'deletePost' recipe}}>Delete</button>
-  </div>
-{{/each}}
