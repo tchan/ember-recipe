@@ -1,18 +1,6 @@
 import Ember from 'ember';
 
-// const fractionSymbols = {
-//   "⅛": "1/8",
-//   "¼": "1/4",
-//   "⅓": "1/3",
-//   "⅜": "3/8",
-//   "½": "1/2",
-//   "⅝": "5/8",
-//   "⅔": "2/3",
-//   "¾": "3/4",
-//   "⅞": "7/8",
-//
-// };
-
+const mlsPerCup = 250;
 const gramsPerOunce = 28.3495;
 
 function checkIfOunces(arr) {
@@ -68,6 +56,13 @@ function hasCocoaPowder(arr) {
     if (arr.includes('cocoa') && arr.includes('powder')) {
       return true;
     }
+}
+
+function hasLiquid(arr) {
+  arr = arr.join(" ");
+  if (arr.includes('water') || arr.includes('milk') || arr.includes('juice')) {
+    return true;
+  }
 }
 
 export default Ember.Controller.extend({
@@ -163,11 +158,12 @@ export default Ember.Controller.extend({
             // account for recipes like "1 1/2 cups sugar"
             if (cupIndex >1 && !isNaN(recipeElement[0])) {
               //combine the two into a single element
-              // console.log('recipe0', recipeElement[0]);
-              // console.log('recipe1', recipeElement[1]);
+              console.log('recipe0', recipeElement[0]);
+              console.log('recipe1', recipeElement[1]);
               let combinedElement = recipeElement[0] + " " + recipeElement[1];
               // remove double blank space due to bad code
-              combinedElement = combinedElement.replace(/  +/g, ' ');
+              // combinedElement = combinedElement.replace(/  +/g, ' '); linter complains about this one
+              combinedElement = combinedElement.replace(/ {2}/g, ' ');
               // console.log('combinedElement', combinedElement);
               recipeElement[1] = combinedElement;
               recipeElement.shift();
@@ -233,6 +229,38 @@ export default Ember.Controller.extend({
 
         }
 
+        if (hasLiquid(recipeElement)) {
+          if (hasCup(recipeElement)) {
+            let cupIndex = hasCup(recipeElement);
+            if (cupIndex >1 && !isNaN(recipeElement[0])) {
+              //combine the two into a single element
+              console.log('recipe0', recipeElement[0]);
+              console.log('recipe1', recipeElement[1]);
+              let combinedElement = recipeElement[0] + " " + recipeElement[1];
+              // remove double blank space due to bad code
+              // combinedElement = combinedElement.replace(/  +/g, ' '); linter complains about this one
+              combinedElement = combinedElement.replace(/ {2}/g, ' ');
+              // console.log('combinedElement', combinedElement);
+              recipeElement[1] = combinedElement;
+              recipeElement.shift();
+              // console.log('recipeElementvs', recipeElement);
+              cupIndex = hasCup(recipeElement);
+            }
+            let cupValueIndex = cupIndex - 1;
+
+            if (recipeElement[cupValueIndex][0] == " ") {
+              recipeElement[cupValueIndex] = recipeElement[cupValueIndex].trim();
+            }
+
+            if (recipeElement[cupValueIndex].split(" ").length >1 ) {
+              recipeElement[cupValueIndex] = recipeElement[cupValueIndex].split(" ").join("+");
+            }
+
+            recipeElement[cupValueIndex] = (eval(recipeElement[cupValueIndex])*mlsPerCup).toFixed(0);
+            recipeElement[cupIndex] = "mls";
+            recipeArr[i] =  recipeElement.join(" ");
+          }
+        }
 
         // console.log(recipeElement);
       } //end looping through each line of ingredient
