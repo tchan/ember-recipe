@@ -47,18 +47,6 @@ function hasCup(arr) {
 }
 
 const butterCupPerGram = 226.8;
-// const butterCups = {
-//   "1/8": 28.4,
-//   "1/4": 56.7,
-//   "1/3": 75.6,
-//   "3/8": 85,
-//   "1/2": 113.4,
-//   "5/8": 141.8,
-//   "2/3": 151.2,
-//   "3/4": 170.1,
-//   "7/8": 198.5,
-//   "1": 226.8
-// };
 
 const whiteSugarCupPerGram = 225;
 
@@ -85,6 +73,7 @@ function hasCocoaPowder(arr) {
 export default Ember.Controller.extend({
   title: null,
   convertedRecipe: "Click convert!",
+  example: "Paste and make sure your recipe here like this:\n8 ounces good-quality chocolate \n¾ cup butter, melted \n¼ cups sugar\n2 eggs\n2 teaspoons vanilla\n¾ cup all-purpose flour\n¼ cup cocoa powder\n1 teaspoon salt",
 
   actions: {
     publishNewPost() {
@@ -102,6 +91,7 @@ export default Ember.Controller.extend({
     },
 
     convertRecipe(recipe) {
+
       let recipeArr = recipe.split("\n");
       // console.log('initial recipeArr', recipeArr);
 
@@ -128,9 +118,11 @@ export default Ember.Controller.extend({
 
         // Convert ounce value to grams if exists
         if (checkIfOunces(recipeElement)) {
+
           let ounce = checkIfOunces(recipeElement);
+          // console.log(ounce);
           let ounceValue = ounce - 1;
-          recipeElement[ounceValue] = (gramsPerOunce*recipeElement[ounceValue]).toFixed(0);
+          recipeElement[ounceValue] = (gramsPerOunce*eval(recipeElement[ounceValue])).toFixed(0);
           recipeElement[ounce] = "grams";
           recipeArr[i] =  recipeElement.join(" ");
         }
@@ -166,8 +158,23 @@ export default Ember.Controller.extend({
 
         if (hasSugar(recipeElement)) {
           if (hasCup(recipeElement)) {
-
+            // console.log('recipe element:', recipeElement);
             let cupIndex = hasCup(recipeElement);
+            // account for recipes like "1 1/2 cups sugar"
+            if (cupIndex >1 && !isNaN(recipeElement[0])) {
+              //combine the two into a single element
+              // console.log('recipe0', recipeElement[0]);
+              // console.log('recipe1', recipeElement[1]);
+              let combinedElement = recipeElement[0] + " " + recipeElement[1];
+              // remove double blank space due to bad code
+              combinedElement = combinedElement.replace(/  +/g, ' ');
+              // console.log('combinedElement', combinedElement);
+              recipeElement[1] = combinedElement;
+              recipeElement.shift();
+              // console.log('recipeElementvs', recipeElement);
+              cupIndex = hasCup(recipeElement);
+            }
+
             // console.log('cupindex', cupIndex);
             let cupValueIndex = cupIndex - 1;
 
