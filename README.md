@@ -2,7 +2,7 @@
 Ember Recipe converts recipes from overseas that use the imperial unit of measurement to the metric system.
 
 ## Demo
-
+Simply copy and paste a recipe onto the text box on the left hand side and click convert.
 ![Demo](/giphy.gif)
 
 ## Prerequisites
