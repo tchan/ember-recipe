@@ -1,7 +1,29 @@
 # Ember Recipe
-Ember Recipe converts recipes from overseas that use the imperial unit of measurement to the metric system.
+Ember Recipe converts overseas recipes that use imperial measurements to metric grams for Australians. Currently being tailored for baking recipes. Feel free to let me know if you find any bugs.
+
+Food conversions currently include:
+* butter
+* sugar (white)
+* all purpose flour
+* cocoa powder
+
+**Formats accepted:** 
+
+```
+8 ounces good-quality chocolate 
+¾ cup butter, melted
+1¼ cups sugar
+2 eggs
+2 teaspoons vanilla
+¾ cup all-purpose flour
+¼ cup cocoa powder
+1 teaspoon salt
+```
+
 
 ## Demo
+http://ember-recipe.surge.sh/
+
 Simply copy and paste a recipe onto the text box on the left hand side and click convert.
 ![Demo](/giphy.gif)
 
