@@ -3,8 +3,7 @@ Ember Recipe converts recipes from overseas that use the imperial unit of measur
 
 ## Demo
 
-![Demo]
-(/giphy.gif)
+![Demo](/giphy.gif)
 
 ## Prerequisites
 
