@@ -1,17 +1,18 @@
 import Ember from 'ember';
 
-const fractionSymbols = {
-  "⅛": "1/8",
-  "¼": "1/4",
-  "⅓": "1/3",
-  "⅜": "3/8",
-  "½": "1/2",
-  "⅝": "5/8",
-  "⅔": "2/3",
-  "¾": "3/4",
-  "⅞": "7/8",
+// const fractionSymbols = {
+//   "⅛": "1/8",
+//   "¼": "1/4",
+//   "⅓": "1/3",
+//   "⅜": "3/8",
+//   "½": "1/2",
+//   "⅝": "5/8",
+//   "⅔": "2/3",
+//   "¾": "3/4",
+//   "⅞": "7/8",
+//
+// };
 
-};
 const gramsPerOunce = 28.3495;
 
 function checkIfOunces(arr) {
@@ -45,33 +46,40 @@ function hasCup(arr) {
   }
 }
 
-const butterCups = {
-  "1/8": 28.4,
-  "1/4": 56.7,
-  "1/3": 75.6,
-  "3/8": 85,
-  "1/2": 113.4,
-  "5/8": 141.8,
-  "2/3": 151.2,
-  "3/4": 170.1,
-  "7/8": 198.5,
-  "1": 226.8
-};
+const butterCupPerGram = 226.8;
+// const butterCups = {
+//   "1/8": 28.4,
+//   "1/4": 56.7,
+//   "1/3": 75.6,
+//   "3/8": 85,
+//   "1/2": 113.4,
+//   "5/8": 141.8,
+//   "2/3": 151.2,
+//   "3/4": 170.1,
+//   "7/8": 198.5,
+//   "1": 226.8
+// };
 
-//Also known as white sugar
-const whiteSugarCups = {
-  "1/4": 50,
-  "1/3": 66.7,
-  "1/2": 100,
-  "5/8": 125,
-  "2/3": 133,
-  "3/4": 150,
-  "1": 200
-};
+const whiteSugarCupPerGram = 225;
 
-//Keep in mind there are multiple types of sugar
+//Keep in mind there are multiple types of sugar, needs adjusting later, currently only accounts for white
 function hasSugar(arr) {
   return arr.includes('sugar');
+}
+
+function hasFlour(arr) {
+  return arr.includes('flour');
+}
+// All purpose flour
+const flourCupPerGram = 125;
+
+const cocoaPowderPerGram = 100;
+
+function hasCocoaPowder(arr) {
+    arr = arr.join(" ");
+    if (arr.includes('cocoa') && arr.includes('powder')) {
+      return true;
+    }
 }
 
 export default Ember.Controller.extend({
@@ -95,7 +103,7 @@ export default Ember.Controller.extend({
 
     convertRecipe(recipe) {
       let recipeArr = recipe.split("\n");
-      console.log('initial recipeArr', recipeArr);
+      // console.log('initial recipeArr', recipeArr);
 
       //loop through each element and convert if needed
       for (var i=0; i<recipeArr.length; i++) {
@@ -140,8 +148,16 @@ export default Ember.Controller.extend({
               butterCupValue = butterCupValue.trim();
             }
             // console.log('buttercup value:', butterCupValue);
-            // console.log('buttercup value:', butterCups[butterCupValue]);
-            recipeElement[butterCupValueIndex] = butterCups[butterCupValue].toFixed(0);
+            // console.log('buttercup valueArr:', butterCupValue.split(" "));
+
+            // accounts for  something lines starting with 1¾ -> ["1", "3/4"]
+            if (butterCupValue.split(" ").length > 1) {
+              butterCupValue = butterCupValue.split(" ").join("+");
+              // console.log('eval new ', eval(butterCupValue));
+            }
+            // console.log('butterCupPerGram', butterCupPerGram);
+            // console.log('buttercup value:', (eval(butterCupValue)*butterCupPerGram).toFixed(0));
+            recipeElement[butterCupValueIndex] = (eval(butterCupValue)*butterCupPerGram).toFixed(0);
             recipeElement[butterCup] = "grams";
             recipeArr[i] =  recipeElement.join(" ");
 
@@ -149,19 +165,67 @@ export default Ember.Controller.extend({
         }
 
         if (hasSugar(recipeElement)) {
-          console.log('has sugar: ', hasSugar(recipeElement));
           if (hasCup(recipeElement)) {
 
             let cupIndex = hasCup(recipeElement);
-            console.log('cupindex', cupIndex);
+            // console.log('cupindex', cupIndex);
             let cupValueIndex = cupIndex - 1;
-            console.log('recipeele', recipeElement);
-            console.log('cupValue', recipeElement[cupValueIndex]);
-            console.log('cupValue value:',whiteSugarCups[cupValueIndex]);
-            // recipeElement[cupIndex] = "grams";
+
+            // accounts for something like ¾ cup rather than 1¾
+            if (recipeElement[cupValueIndex][0] == " ") {
+              recipeElement[cupValueIndex] = recipeElement[cupValueIndex].trim();
+            }
+
+            if (recipeElement[cupValueIndex].split(" ").length >1 ) {
+              recipeElement[cupValueIndex] = recipeElement[cupValueIndex].split(" ").join("+");
+            }
+            // console.log('recipeele', recipeElement);
+            // console.log('cupValue', eval(recipeElement[cupValueIndex].split(" ").join("+")));
+            // console.log('cupValue index:',cupValueIndex);
+            recipeElement[cupValueIndex] = (eval(recipeElement[cupValueIndex])*whiteSugarCupPerGram).toFixed(0);
+            recipeElement[cupIndex] = "grams";
             recipeArr[i] =  recipeElement.join(" ");
           }
         }
+
+        if (hasFlour(recipeElement)) {
+          // console.log(recipeElement);
+          if (hasCup(recipeElement)) {
+            let cupIndex = hasCup(recipeElement);
+            let cupValueIndex = cupIndex - 1;
+            if (recipeElement[cupValueIndex][0] == " ") {
+              recipeElement[cupValueIndex] = recipeElement[cupValueIndex].trim();
+            }
+
+            if (recipeElement[cupValueIndex].split(" ").length >1 ) {
+              recipeElement[cupValueIndex] = recipeElement[cupValueIndex].split(" ").join("+");
+            }
+
+            recipeElement[cupValueIndex] = (eval(recipeElement[cupValueIndex])*flourCupPerGram).toFixed(0);
+            recipeElement[cupIndex] = "grams";
+            recipeArr[i] =  recipeElement.join(" ");
+          }
+        }
+
+        if (hasCocoaPowder(recipeElement)) {
+          if (hasCup(recipeElement)) {
+            let cupIndex = hasCup(recipeElement);
+            let cupValueIndex = cupIndex - 1;
+            if (recipeElement[cupValueIndex][0] == " ") {
+              recipeElement[cupValueIndex] = recipeElement[cupValueIndex].trim();
+            }
+
+            if (recipeElement[cupValueIndex].split(" ").length >1 ) {
+              recipeElement[cupValueIndex] = recipeElement[cupValueIndex].split(" ").join("+");
+            }
+
+            recipeElement[cupValueIndex] = (eval(recipeElement[cupValueIndex])*cocoaPowderPerGram).toFixed(0);
+            recipeElement[cupIndex] = "grams";
+            recipeArr[i] =  recipeElement.join(" ");
+          }
+
+        }
+
 
         // console.log(recipeElement);
       } //end looping through each line of ingredient
