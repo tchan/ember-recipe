@@ -257,7 +257,7 @@ export default Ember.Controller.extend({
             }
 
             recipeElement[cupValueIndex] = (eval(recipeElement[cupValueIndex])*mlsPerCup).toFixed(0);
-            recipeElement[cupIndex] = "mls";
+            recipeElement[cupIndex] = "ml";
             recipeArr[i] =  recipeElement.join(" ");
           }
         }
