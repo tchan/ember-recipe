@@ -2,7 +2,8 @@ import Ember from 'ember';
 
 const mlsPerCup = 250;
 const gramsPerOunce = 28.3495;
-
+const butterCupPerGram = 226.8;
+const whiteSugarCupPerGram = 225;
 function checkIfOunces(arr) {
     if (arr.includes('ounces')) {
       return arr.indexOf('ounces');
@@ -34,9 +35,7 @@ function hasCup(arr) {
   }
 }
 
-const butterCupPerGram = 226.8;
 
-const whiteSugarCupPerGram = 225;
 
 //Keep in mind there are multiple types of sugar, needs adjusting later, currently only accounts for white
 function hasSugar(arr) {
@@ -158,8 +157,8 @@ export default Ember.Controller.extend({
             // account for recipes like "1 1/2 cups sugar"
             if (cupIndex >1 && !isNaN(recipeElement[0])) {
               //combine the two into a single element
-              console.log('recipe0', recipeElement[0]);
-              console.log('recipe1', recipeElement[1]);
+              // console.log('recipe0', recipeElement[0]);
+              // console.log('recipe1', recipeElement[1]);
               let combinedElement = recipeElement[0] + " " + recipeElement[1];
               // remove double blank space due to bad code
               // combinedElement = combinedElement.replace(/  +/g, ' '); linter complains about this one
@@ -192,9 +191,17 @@ export default Ember.Controller.extend({
         }
 
         if (hasFlour(recipeElement)) {
-          // console.log(recipeElement);
           if (hasCup(recipeElement)) {
             let cupIndex = hasCup(recipeElement);
+            if (cupIndex >1 && !isNaN(recipeElement[0])) {
+
+              let combinedElement = recipeElement[0] + " " + recipeElement[1];
+              combinedElement = combinedElement.replace(/ {2}/g, ' ');
+              recipeElement[1] = combinedElement;
+              recipeElement.shift();
+              cupIndex = hasCup(recipeElement);
+            }
+            
             let cupValueIndex = cupIndex - 1;
             if (recipeElement[cupValueIndex][0] == " ") {
               recipeElement[cupValueIndex] = recipeElement[cupValueIndex].trim();
@@ -233,19 +240,14 @@ export default Ember.Controller.extend({
           if (hasCup(recipeElement)) {
             let cupIndex = hasCup(recipeElement);
             if (cupIndex >1 && !isNaN(recipeElement[0])) {
-              //combine the two into a single element
-              console.log('recipe0', recipeElement[0]);
-              console.log('recipe1', recipeElement[1]);
+
               let combinedElement = recipeElement[0] + " " + recipeElement[1];
-              // remove double blank space due to bad code
-              // combinedElement = combinedElement.replace(/  +/g, ' '); linter complains about this one
               combinedElement = combinedElement.replace(/ {2}/g, ' ');
-              // console.log('combinedElement', combinedElement);
               recipeElement[1] = combinedElement;
               recipeElement.shift();
-              // console.log('recipeElementvs', recipeElement);
               cupIndex = hasCup(recipeElement);
             }
+
             let cupValueIndex = cupIndex - 1;
 
             if (recipeElement[cupValueIndex][0] == " ") {
