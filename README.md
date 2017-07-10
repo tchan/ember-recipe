@@ -19,7 +19,16 @@ Food conversions currently include:
 ¼ cup cocoa powder
 1 teaspoon salt
 ```
-
+```
+8 ounces good-quality chocolate 
+3/4 cup butter, melted
+1 1/4 cups sugar
+2 eggs
+2 teaspoons vanilla
+3/4 cup all-purpose flour
+1/4 cup cocoa powder
+1 teaspoon salt
+```
 
 ## Demo
 http://ember-recipe.surge.sh/
