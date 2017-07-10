@@ -2,7 +2,11 @@ import Ember from 'ember';
 
 const mlsPerCup = 250;
 const gramsPerOunce = 28.3495;
+
+//butter
 const butterCupPerGram = 226.8;
+const butterTbspPerGram = 14.18;
+
 const whiteSugarCupPerGram = 225;
 function checkIfOunces(arr) {
     if (arr.includes('ounces')) {
@@ -32,6 +36,15 @@ function hasCup(arr) {
   }
   if (arr.includes('cups')) {
     return arr.indexOf('cups');
+  }
+}
+
+function hasTablespoon(arr) {
+  if (arr.includes('tablespoons')) {
+    return arr.indexOf('tablespoons');
+  }
+  if (arr.includes('tablespoon')) {
+    return arr.indexOf('tablespoon');
   }
 }
 
@@ -146,8 +159,26 @@ export default Ember.Controller.extend({
             recipeElement[butterCupValueIndex] = (eval(butterCupValue)*butterCupPerGram).toFixed(0);
             recipeElement[butterCup] = "grams";
             recipeArr[i] =  recipeElement.join(" ");
-
           }
+
+          if (hasTablespoon(recipeElement)) {
+            let butterTablespoon = hasTablespoon(recipeElement);
+            let butterTablespoonValueIndex = butterTablespoon - 1;
+            let butterTablespoonValue = recipeElement[butterTablespoonValueIndex];
+
+            if (butterTablespoonValue[0] == " ") {
+              butterTablespoonValue = butterTablespoonValue.trim();
+            }
+
+            if (butterTablespoonValue.split(" ").length > 1) {
+              butterTablespoonValue = butterTablespoonValue.split(" ").join("+");
+            }
+
+            recipeElement[butterTablespoonValueIndex] = (eval(butterTablespoonValue)*butterTbspPerGram).toFixed(0);
+            recipeElement[butterTablespoon] = "grams";
+            recipeArr[i] =  recipeElement.join(" ");
+          }
+
         }
 
         if (hasSugar(recipeElement)) {
@@ -201,7 +232,7 @@ export default Ember.Controller.extend({
               recipeElement.shift();
               cupIndex = hasCup(recipeElement);
             }
-            
+
             let cupValueIndex = cupIndex - 1;
             if (recipeElement[cupValueIndex][0] == " ") {
               recipeElement[cupValueIndex] = recipeElement[cupValueIndex].trim();
