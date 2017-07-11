@@ -1,6 +1,8 @@
 import Ember from 'ember';
 
+//water
 const mlsPerCup = 250;
+
 const gramsPerOunce = 28.3495;
 
 //butter
@@ -8,6 +10,10 @@ const butterCupPerGram = 226.8;
 const butterTbspPerGram = 14.18;
 
 const whiteSugarCupPerGram = 225;
+
+//tablespoon (US) vanilla extract
+const vanillaExtractMlPerTbsp = 14.79;
+
 function checkIfOunces(arr) {
     if (arr.includes('ounces')) {
       return arr.indexOf('ounces');
@@ -23,6 +29,16 @@ function checkIfOunces(arr) {
 function hasButter(arr) {
   arr = arr.join(" ");
   if (arr.includes('butter') && !arr.includes('peanut')) {
+    return true;
+  }
+  else {
+    return false;
+  }
+}
+
+function hasVanillaExtract(arr) {
+  arr = arr.join(" ");
+  if  (arr.includes('vanilla extract')) {
     return true;
   }
   else {
@@ -251,6 +267,14 @@ export default Ember.Controller.extend({
         if (hasCocoaPowder(recipeElement)) {
           if (hasCup(recipeElement)) {
             let cupIndex = hasCup(recipeElement);
+            if (cupIndex >1 && !isNaN(recipeElement[0])) {
+
+              let combinedElement = recipeElement[0] + " " + recipeElement[1];
+              combinedElement = combinedElement.replace(/ {2}/g, ' ');
+              recipeElement[1] = combinedElement;
+              recipeElement.shift();
+              cupIndex = hasCup(recipeElement);
+            }
             let cupValueIndex = cupIndex - 1;
             if (recipeElement[cupValueIndex][0] == " ") {
               recipeElement[cupValueIndex] = recipeElement[cupValueIndex].trim();
@@ -291,6 +315,32 @@ export default Ember.Controller.extend({
 
             recipeElement[cupValueIndex] = (eval(recipeElement[cupValueIndex])*mlsPerCup).toFixed(0);
             recipeElement[cupIndex] = "ml";
+            recipeArr[i] =  recipeElement.join(" ");
+          }
+        }
+
+        if (hasVanillaExtract(recipeElement)) {
+          if (hasTablespoon(recipeElement)) {
+            let TablespoonIndex = hasTablespoon(recipeElement);
+            if (TablespoonIndex >1 && !isNaN(recipeElement[0])) {
+              let combinedElement = recipeElement[0] + " " + recipeElement[1];
+              combinedElement = combinedElement.replace(/ {2}/g, ' ');
+              recipeElement[1] = combinedElement;
+              recipeElement.shift();
+              TablespoonIndex = hasTablespoon(recipeElement);
+            }
+
+            let TablespoonValueIndex = TablespoonIndex - 1;
+            if (recipeElement[TablespoonValueIndex][0] == " ") {
+              recipeElement[TablespoonValueIndex] = recipeElement[TablespoonValueIndex].trim();
+            }
+
+            if (recipeElement[TablespoonValueIndex].split(" ").length >1 ) {
+              recipeElement[TablespoonValueIndex] = recipeElement[TablespoonValueIndex].split(" ").join("+");
+            }
+
+            recipeElement[TablespoonValueIndex] = (eval(recipeElement[TablespoonValueIndex])*vanillaExtractMlPerTbsp).toFixed(0);
+            recipeElement[TablespoonIndex] = "ml";
             recipeArr[i] =  recipeElement.join(" ");
           }
         }
