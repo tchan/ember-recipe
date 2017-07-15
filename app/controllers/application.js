@@ -14,6 +14,11 @@ const whiteSugarCupPerGram = 225;
 //tablespoon (US) vanilla extract
 const vanillaExtractMlPerTbsp = 14.79;
 
+// All purpose flour
+const flourCupPerGram = 125;
+
+const cocoaPowderPerGram = 100;
+
 function checkIfOunces(arr) {
     if (arr.includes('ounces')) {
       return arr.indexOf('ounces');
@@ -64,8 +69,6 @@ function hasTablespoon(arr) {
   }
 }
 
-
-
 //Keep in mind there are multiple types of sugar, needs adjusting later, currently only accounts for white
 function hasSugar(arr) {
   return arr.includes('sugar');
@@ -74,10 +77,6 @@ function hasSugar(arr) {
 function hasFlour(arr) {
   return arr.includes('flour');
 }
-// All purpose flour
-const flourCupPerGram = 125;
-
-const cocoaPowderPerGram = 100;
 
 function hasCocoaPowder(arr) {
     arr = arr.join(" ");
@@ -93,10 +92,23 @@ function hasLiquid(arr) {
   }
 }
 
+function replaceFractionSymbol(recipeElement) {
+  recipeElement = recipeElement.replace(/⅛/gi, " 1/8");
+  recipeElement = recipeElement.replace(/¼/gi, " 1/4");
+  recipeElement = recipeElement.replace(/⅓/gi, " 1/3");
+  recipeElement = recipeElement.replace(/⅜/gi, " 3/8");
+  recipeElement = recipeElement.replace(/½/gi, " 1/2");
+  recipeElement = recipeElement.replace(/⅝/gi, " 5/8");
+  recipeElement = recipeElement.replace(/⅔/gi, " 2/3");
+  recipeElement = recipeElement.replace(/¾/gi, " 3/4");
+  recipeElement = recipeElement.replace(/⅞/gi, " 7/8");
+  return recipeElement;
+}
+
 export default Ember.Controller.extend({
   title: null,
   convertedRecipe: "Click convert!",
-  example: "Paste and make sure your recipe here like this:\n8 ounces good-quality chocolate \n¾ cup butter, melted \n¼ cups sugar\n2 eggs\n2 teaspoons vanilla\n¾ cup all-purpose flour\n¼ cup cocoa powder\n1 teaspoon salt",
+  example: "Make sure your recipe is similar to this:\n8 ounces good-quality chocolate \n¾ cup butter, melted \n¼ cups sugar\n2 eggs\n2 teaspoons vanilla\n¾ cup all-purpose flour\n¼ cup cocoa powder\n1 teaspoon salt",
 
   actions: {
     publishNewPost() {
@@ -116,28 +128,20 @@ export default Ember.Controller.extend({
     convertRecipe(recipe) {
 
       let recipeArr = recipe.split("\n");
-      // console.log('initial recipeArr', recipeArr);
+
+      //first replace fraction symbols
 
       //loop through each element and convert if needed
+      console.log('recipeArr', recipeArr);
       for (var i=0; i<recipeArr.length; i++) {
-
         // each line as a new array
         let recipeElement = recipeArr[i].split(" ");
-        // console.log(recipeElement);
 
         //replace symbol fractions
         for (var j=0; j<recipeElement.length; j++) {
-          recipeElement[j] = recipeElement[j].replace(/⅛/gi, " 1/8");
-          recipeElement[j] = recipeElement[j].replace(/¼/gi, " 1/4");
-          recipeElement[j] = recipeElement[j].replace(/⅓/gi, " 1/3");
-          recipeElement[j] = recipeElement[j].replace(/⅜/gi, " 3/8");
-          recipeElement[j] = recipeElement[j].replace(/½/gi, " 1/2");
-          recipeElement[j] = recipeElement[j].replace(/⅝/gi, " 5/8");
-          recipeElement[j] = recipeElement[j].replace(/⅔/gi, " 2/3");
-          recipeElement[j] = recipeElement[j].replace(/¾/gi, " 3/4");
-          recipeElement[j] = recipeElement[j].replace(/⅞/gi, " 7/8");
-          recipeArr[i] =  recipeElement.join(" ");
+          recipeElement[j] = replaceFractionSymbol(recipeElement[j]);
         }
+        recipeArr[i] =  recipeElement.join(" ");
 
         // Convert ounce value to grams if exists
         if (checkIfOunces(recipeElement)) {
@@ -204,16 +208,13 @@ export default Ember.Controller.extend({
             // account for recipes like "1 1/2 cups sugar"
             if (cupIndex >1 && !isNaN(recipeElement[0])) {
               //combine the two into a single element
-              // console.log('recipe0', recipeElement[0]);
-              // console.log('recipe1', recipeElement[1]);
               let combinedElement = recipeElement[0] + " " + recipeElement[1];
               // remove double blank space due to bad code
               // combinedElement = combinedElement.replace(/  +/g, ' '); linter complains about this one
               combinedElement = combinedElement.replace(/ {2}/g, ' ');
-              // console.log('combinedElement', combinedElement);
               recipeElement[1] = combinedElement;
               recipeElement.shift();
-              // console.log('recipeElementvs', recipeElement);
+
               cupIndex = hasCup(recipeElement);
             }
 
@@ -228,9 +229,6 @@ export default Ember.Controller.extend({
             if (recipeElement[cupValueIndex].split(" ").length >1 ) {
               recipeElement[cupValueIndex] = recipeElement[cupValueIndex].split(" ").join("+");
             }
-            // console.log('recipeele', recipeElement);
-            // console.log('cupValue', eval(recipeElement[cupValueIndex].split(" ").join("+")));
-            // console.log('cupValue index:',cupValueIndex);
             recipeElement[cupValueIndex] = (eval(recipeElement[cupValueIndex])*whiteSugarCupPerGram).toFixed(0);
             recipeElement[cupIndex] = "grams";
             recipeArr[i] =  recipeElement.join(" ");
